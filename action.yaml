@@ -1,0 +1,132 @@
+name: 'Deploy Go Application to Kubernetes'
+description: 'Used to encapsulate the build and deploy process for Go middleware services.'
+
+inputs:
+  GCP_SA_KEY: 
+    description: 'GCP Service Account Key (JSON)'
+    required: true
+
+  GKE_CLUSTER_NAME:
+    description: 'Google Kubernetes Engine Cluster name'
+    required: true
+
+  GCP_ZONE: 
+    description: 'GCP Zone'
+    required: true
+
+  GCP_PROJECT_ID:
+    description: 'GCP Project ID'
+    required: true
+
+  TLD:
+    description: 'Top Level Domain to create subdomain on.'
+    required: true
+
+  GHA_ACCESS_USER: 
+    description: 'GitHub Actions Access Username'
+    required: false
+
+  GHA_ACCESS_TOKEN:
+    description: 'GitHub Actions Access Token'
+    required: false
+
+  secret:
+    description: 'Name of secret to copy from default namespace'
+    required: false
+
+  skip_deploy_status:
+    description: 'Flag to skip deployment status check'
+    required: false
+    default: 'false'
+
+  go-version:
+    description: 'The Go version to download (if necessary) and use. Supports semver spec and ranges.'
+    required: false
+
+  skip_cache:
+    description: 'Flag to skip add dependencies from cache'
+    required: false
+    default: 'false'
+
+  skip_install:
+    description: 'Flag to skip installing dependencies before building'
+    required: false
+    default: 'false'
+
+  skip_testing:
+    description: 'Flag to skip running tests'
+    required: false
+    default: 'false'
+
+  test_flags:
+    description: 'Optional flags to supply to the test step'
+    required: false
+
+  build_flags:
+    description: 'Optional flags to supply to the build step'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Export Environment Variables
+      uses: dmsi-io/gha-env-variables@v1
+      with:
+        TLD: ${{ inputs.TLD }}
+        GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
+
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ inputs.go-version }}
+
+    - name: Configure git for private modules
+      if: inputs.GHA_ACCESS_USER != '' && inputs.GHA_ACCESS_TOKEN != ''
+      run: |
+        git config --global url."https://${{ inputs.GHA_ACCESS_USER }}:${{ inputs.GHA_ACCESS_TOKEN }}@github.com".insteadOf "https://github.com"
+        go env -w GOPRIVATE="github.com/${{ github.repository_owner }}/*"
+        go env
+      shell: bash
+
+    - name: Add Dependencies from Cache
+      if: inputs.skip_cache == 'false'
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install dependencies
+      if: inputs.skip_install == 'false'
+      run: |
+        go mod download
+        go mod verify
+      shell: bash
+
+    - name: Run unit tests
+      if: inputs.skip_testing == 'false'
+      run: go test ${{ inputs.test_flags }} ./...
+      shell: bash
+
+    - name: Build
+      run: go build ${{ inputs.build_flags }} main.go
+      env:
+        CGO_ENABLED: '0'
+        GOOS: linux
+      shell: bash
+
+    - name: Deploy Kubernetes
+      uses: dmsi-io/gha-k8s-deploy@v1
+      with: 
+        GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
+        GKE_CLUSTER_NAME: ${{ inputs.GKE_CLUSTER_NAME }}
+        GCP_ZONE: ${{ inputs.GCP_ZONE }}
+        GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
+        secret: ${{ inputs.secret }}
+        skip_deploy_status: ${{ inputs.skip_deploy_status }}
