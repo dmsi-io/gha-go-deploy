@@ -39,11 +39,6 @@ inputs:
     required: false
     default: 'false'
 
-  skip_testing:
-    description: 'Flag to skip running tests'
-    required: false
-    default: 'false'
-
   skip_cache:
     description: 'Flag to skip add dependencies from cache'
     required: false
@@ -53,6 +48,19 @@ inputs:
     description: 'Flag to skip installing dependencies before building'
     required: false
     default: 'false'
+
+  skip_testing:
+    description: 'Flag to skip running tests'
+    required: false
+    default: 'false'
+
+  test_flags:
+    description: 'Optional flags to supply to the test step'
+    required: false
+
+  build_flags:
+    description: 'Optional flags to supply to the build step'
+    required: false
 
 runs:
   using: composite
@@ -97,11 +105,11 @@ runs:
 
     - name: Run unit tests
       if: inputs.skip_testing == 'false'
-      run: go test ./...
+      run: go test ${{ inputs.test_flags }} ./...
       shell: bash
 
     - name: Build
-      run: go build main.go
+      run: go build ${{ inputs.build_flags }} main.go
       env:
         CGO_ENABLED: '0'
         GOOS: linux
