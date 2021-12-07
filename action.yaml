@@ -39,6 +39,10 @@ inputs:
     required: false
     default: 'false'
 
+  go-version:
+    description: 'The Go version to download (if necessary) and use. Supports semver spec and ranges.'
+    required: false
+
   skip_cache:
     description: 'Flag to skip add dependencies from cache'
     required: false
@@ -76,6 +80,8 @@ runs:
 
     - name: Setup Go
       uses: actions/setup-go@v2
+      with:
+        go-version: ${{ inputs.go-version }}
 
     - name: Configure git for private modules
       if: inputs.GHA_ACCESS_USER != '' && inputs.GHA_ACCESS_TOKEN != ''
