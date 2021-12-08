@@ -21,9 +21,11 @@ This GitHub Action encapsulates all of the build and deploy steps required to de
     TLD: ${{ secrets.TOP_LEVEL_DOMAIN }}
 ```
 
-As of v1 of this GitHub Action, it is assumed that all required Kubernetes config files exist within the Go repository at the default directory and filename as follows:
+As of v1.1 of this GitHub Action, there will be provided default Kubernetes configuration yaml files. These are the standard for our Go Middleware Services. If a custom configuration is required, those can be supplied in the repository in question under the default folder structure as follows:
 
 ![Kubernetes Directory](/assets/k8s_directory.png)
+
+> Only supply the k8s yaml file that requires customization, all others will be copied in from this GitHub Action.
 
 Additionally, the Dockerfile must also be located at the head of the repository.
 
