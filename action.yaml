@@ -78,6 +78,8 @@ runs:
         TLD: ${{ inputs.TLD }}
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
 
+    ###### Setup and build Go executable ######
+
     - name: Setup Go
       uses: actions/setup-go@v2
       with:
@@ -120,6 +122,26 @@ runs:
         CGO_ENABLED: '0'
         GOOS: linux
       shell: bash
+
+    ###### Check and setup Kubernetes configs
+
+    - name: Check k8s folder existence
+      id: k8s_exists
+      uses: andstor/file-existence-action@v1.0.1
+      with:
+        files: "k8s"
+
+    - name: Create k8s directory
+      if: steps.k8s_exists.outputs.files_exists != 'true'
+      run: mkdir k8s
+      shell: bash
+
+    - name: Copy missing k8s config files
+      run: |
+        cp -inv ${{ github.action_path }}/k8s/* k8s
+      shell: bash
+
+    ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
       uses: dmsi-io/gha-k8s-deploy@v1
