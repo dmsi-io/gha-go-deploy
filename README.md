@@ -50,7 +50,7 @@ Sometimes when trying to debug a k8s deployment that refuses to deploy correctly
 
 ```yaml
   with:
-    skip_deploy_status: 'true'
+    skip_deploy_status: true
 ```
 
 #### Go Version
@@ -70,7 +70,7 @@ By default, this GitHub Action will download and save a cache of the dependencie
 
 ```yaml
   with:
-    skip_cache: 'true'
+    skip_cache: true
 ```
 
 #### Skip Dependency Install
@@ -81,7 +81,7 @@ By default, this GitHub Action will download and verify dependencies before test
 
 ```yaml
   with:
-    skip_install: 'true'
+    skip_install: true
 ```
 
 #### Skip Testing
@@ -92,7 +92,7 @@ By default, this GitHub Action will run all tests before building. This can be s
 
 ```yaml
   with:
-    skip_testing: 'true'
+    skip_testing: true
 ```
 
 #### Test Flags
