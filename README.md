@@ -12,18 +12,22 @@ This GitHub Action encapsulates all of the build and deploy steps required to de
 
 ```yaml
 - name: Build and Deploy Kubernetes
-  uses: dmsi-io/gha-go-deploy@v1
+  uses: dmsi-io/gha-go-deploy@v1.1
   with: 
     GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     GKE_CLUSTER_NAME: ${{ secrets.GCP_STAGING_CLUSTER_NAME }}
     GCP_ZONE: ${{ secrets.GCP_ZONE }}
     GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+    GHA_ACCESS_USER: ${{ secrets.GHA_ACCESS_USER }}
+    GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
     TLD: ${{ secrets.TOP_LEVEL_DOMAIN }}
 ```
 
-As of v1 of this GitHub Action, it is assumed that all required Kubernetes config files exist within the Go repository at the default directory and filename as follows:
+As of v1.1 of this GitHub Action, there will be provided default Kubernetes configuration yaml files. These are the standard for our Go Middleware Services. If a custom configuration is required, those can be supplied in the repository in question under the default folder structure as follows:
 
 ![Kubernetes Directory](/assets/k8s_directory.png)
+
+> Only supply the k8s yaml file that requires customization, all others will be copied in from this GitHub Action.
 
 Additionally, the Dockerfile must also be located at the head of the repository.
 
@@ -46,7 +50,7 @@ Sometimes when trying to debug a k8s deployment that refuses to deploy correctly
 
 ```yaml
   with:
-    skip_deploy_status: 'true'
+    skip_deploy_status: true
 ```
 
 #### Go Version
@@ -66,7 +70,7 @@ By default, this GitHub Action will download and save a cache of the dependencie
 
 ```yaml
   with:
-    skip_cache: 'true'
+    skip_cache: true
 ```
 
 #### Skip Dependency Install
@@ -77,7 +81,7 @@ By default, this GitHub Action will download and verify dependencies before test
 
 ```yaml
   with:
-    skip_install: 'true'
+    skip_install: true
 ```
 
 #### Skip Testing
@@ -88,7 +92,7 @@ By default, this GitHub Action will run all tests before building. This can be s
 
 ```yaml
   with:
-    skip_testing: 'true'
+    skip_testing: true
 ```
 
 #### Test Flags
