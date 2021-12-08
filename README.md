@@ -18,6 +18,8 @@ This GitHub Action encapsulates all of the build and deploy steps required to de
     GKE_CLUSTER_NAME: ${{ secrets.GCP_STAGING_CLUSTER_NAME }}
     GCP_ZONE: ${{ secrets.GCP_ZONE }}
     GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+    GHA_ACCESS_USER: ${{ secrets.GHA_ACCESS_USER }}
+    GHA_ACCESS_TOKEN: ${{ secrets.GHA_ACCESS_TOKEN }}
     TLD: ${{ secrets.TOP_LEVEL_DOMAIN }}
 ```
 
