@@ -137,8 +137,7 @@ runs:
       shell: bash
 
     - name: Copy missing k8s config files
-      run: |
-        cp -inv ${{ github.action_path }}/k8s/* k8s
+      run: cp -inv ${{ github.action_path }}/k8s/* k8s
       shell: bash
 
     ###### Deploy Kubernetes ######
