@@ -12,7 +12,7 @@ This GitHub Action encapsulates all of the build and deploy steps required to de
 
 ```yaml
 - name: Build and Deploy Kubernetes
-  uses: dmsi-io/gha-go-deploy@v1
+  uses: dmsi-io/gha-go-deploy@v1.1
   with: 
     GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     GKE_CLUSTER_NAME: ${{ secrets.GCP_STAGING_CLUSTER_NAME }}
