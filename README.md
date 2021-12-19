@@ -99,8 +99,6 @@ with:
 
 By default, this GitHub Action will run all tests before building. The following input field allows additional flags to be added to the CLI `test` command.
 
-- Default: `false`
-
 ```yaml
 with:
   test_flags: '-tags mock' # example, can be any available CLI flags
@@ -109,8 +107,6 @@ with:
 #### Build Flags
 
 The following input field allows additional flags to be added to the CLI `build` command.
-
-- Default: `false`
 
 ```yaml
 with:
@@ -125,7 +121,7 @@ Our middleware is powered by a central graphql-api that will pull all available 
 
 ```yaml
 with:
-  skip_reset_schema: 'true'
+  skip_reset_schema: true
 ```
 
 #### Endpoint Ping
@@ -147,7 +143,7 @@ Sometimes it is helpful to view the environment variables set to help debug. Sup
 
 ```yaml
 with:
-  print_environemnt: 'true'
+  print_environemnt: true
 ```
 
 #### Print GCloud Info
@@ -158,5 +154,5 @@ Sometimes it is helpful to view gcloud information to help debug. Supplying this
 
 ```yaml
 with:
-  print_gcloud_info: 'true'
+  print_gcloud_info: true
 ```
