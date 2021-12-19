@@ -143,7 +143,7 @@ Sometimes it is helpful to view the environment variables set to help debug. Sup
 
 ```yaml
 with:
-  print_environemnt: true
+  print_environment: true
 ```
 
 #### Print GCloud Info

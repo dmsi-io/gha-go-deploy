@@ -35,7 +35,7 @@ inputs:
     required: false
     default: 'false'
 
-  print_environemnt:
+  print_environment:
     description: 'Flag to optionally print environment variables'
     required: false
     default: 'false'
@@ -169,7 +169,7 @@ runs:
         secret: ${{ inputs.secret }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
         print_gcloud_info: ${{ inputs.print_gcloud_info }}
-        print_environemnt: ${{ inputs.print_environemnt }}
+        print_environment: ${{ inputs.print_environemnt }}
 
     ###### Reset GraphQL Schema ######
 
