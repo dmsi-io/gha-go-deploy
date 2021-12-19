@@ -143,6 +143,10 @@ runs:
       run: cp -inv ${{ github.action_path }}/k8s/* k8s
       shell: bash
 
+    - name: Copy default Dockerfile
+      run: cp -inv ${{ github.action_path }}/Dockerfile Dockerfile
+      shell: bash
+
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
