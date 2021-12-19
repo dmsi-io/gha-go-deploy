@@ -2,7 +2,7 @@ name: 'Deploy Go Application to Kubernetes'
 description: 'Used to encapsulate the build and deploy process for Go middleware services.'
 
 inputs:
-  GCP_SA_KEY: 
+  GCP_SA_KEY:
     description: 'GCP Service Account Key (JSON)'
     required: true
 
@@ -10,7 +10,7 @@ inputs:
     description: 'Google Kubernetes Engine Cluster name'
     required: true
 
-  GCP_ZONE: 
+  GCP_ZONE:
     description: 'GCP Zone'
     required: true
 
@@ -22,7 +22,7 @@ inputs:
     description: 'Top Level Domain to create subdomain on.'
     required: true
 
-  GHA_ACCESS_USER: 
+  GHA_ACCESS_USER:
     description: 'GitHub Actions Access Username'
     required: false
 
@@ -125,15 +125,8 @@ runs:
 
     ###### Check and setup Kubernetes configs
 
-    - name: Check k8s folder existence
-      id: k8s_exists
-      uses: andstor/file-existence-action@v1.0.1
-      with:
-        files: "k8s"
-
     - name: Create k8s directory
-      if: steps.k8s_exists.outputs.files_exists != 'true'
-      run: mkdir k8s
+      run: mkdir -p k8s
       shell: bash
 
     - name: Copy missing k8s config files
@@ -144,7 +137,7 @@ runs:
 
     - name: Deploy Kubernetes
       uses: dmsi-io/gha-k8s-deploy@v1
-      with: 
+      with:
         GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
         GKE_CLUSTER_NAME: ${{ inputs.GKE_CLUSTER_NAME }}
         GCP_ZONE: ${{ inputs.GCP_ZONE }}
