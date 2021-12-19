@@ -66,6 +66,16 @@ inputs:
     description: 'Optional flags to supply to the build step'
     required: false
 
+  skip_reset_schema:
+    description: 'Flag to skip GraphQL schema reset call'
+    required: false
+    default: 'false'
+
+  endpoint:
+    description: 'Endpoint to ping with curl during reset schema step'
+    required: false
+    default: '/graphql?resetSchema=true'
+
 runs:
   using: composite
   steps:
@@ -144,3 +154,10 @@ runs:
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
         secret: ${{ inputs.secret }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
+
+    ###### Reset GraphQL Schema ######
+
+    - name: Reset GraphQL Schema
+      if: inputs.skip_reset_schema != 'true'
+      run: curl "https://$HOSTNAME${{ inputs.endpoint }}"
+      shell: bash
