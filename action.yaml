@@ -30,6 +30,16 @@ inputs:
     description: 'GitHub Actions Access Token'
     required: false
 
+  print_gcloud_info:
+    description: 'Flag to optionally print gcloud info after authenticating'
+    required: false
+    default: 'false'
+
+  print_environemnt:
+    description: 'Flag to optionally print environment variables'
+    required: false
+    default: 'false'
+
   secret:
     description: 'Name of secret to copy from default namespace'
     required: false
@@ -158,6 +168,8 @@ runs:
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
         secret: ${{ inputs.secret }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
+        print_gcloud_info: ${{ inputs.print_gcloud_info }}
+        print_environemnt: ${{ inputs.print_environemnt }}
 
     ###### Reset GraphQL Schema ######
 
