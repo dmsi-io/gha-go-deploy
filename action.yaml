@@ -2,7 +2,7 @@ name: 'Deploy Go Application to Kubernetes'
 description: 'Used to encapsulate the build and deploy process for Go middleware services.'
 
 inputs:
-  GCP_SA_KEY: 
+  GCP_SA_KEY:
     description: 'GCP Service Account Key (JSON)'
     required: true
 
@@ -10,7 +10,7 @@ inputs:
     description: 'Google Kubernetes Engine Cluster name'
     required: true
 
-  GCP_ZONE: 
+  GCP_ZONE:
     description: 'GCP Zone'
     required: true
 
@@ -22,13 +22,28 @@ inputs:
     description: 'Top Level Domain to create subdomain on.'
     required: true
 
-  GHA_ACCESS_USER: 
+  GHA_ACCESS_USER:
     description: 'GitHub Actions Access Username'
     required: false
 
   GHA_ACCESS_TOKEN:
     description: 'GitHub Actions Access Token'
     required: false
+
+  print_gcloud_info:
+    description: 'Flag to optionally print gcloud info after authenticating'
+    required: false
+    default: 'false'
+
+  print_environment:
+    description: 'Flag to optionally print environment variables'
+    required: false
+    default: 'false'
+
+  print_go_env:
+    description: 'Flag to optionally print go environment'
+    required: false
+    default: 'false'
 
   secret:
     description: 'Name of secret to copy from default namespace'
@@ -66,6 +81,21 @@ inputs:
     description: 'Optional flags to supply to the build step'
     required: false
 
+  skip_reset_schema:
+    description: 'Flag to skip GraphQL schema reset call'
+    required: false
+    default: 'false'
+
+  endpoint:
+    description: 'Endpoint to ping with curl during reset schema step'
+    required: false
+    default: '/graphql?resetSchema=true'
+
+outputs:
+  url:
+    description: 'URL'
+    value: ${{ steps.deploy.outputs.url }}
+
 runs:
   using: composite
   steps:
@@ -90,11 +120,15 @@ runs:
       run: |
         git config --global url."https://${{ inputs.GHA_ACCESS_USER }}:${{ inputs.GHA_ACCESS_TOKEN }}@github.com".insteadOf "https://github.com"
         go env -w GOPRIVATE="github.com/${{ github.repository_owner }}/*"
-        go env
+      shell: bash
+
+    - name: Print Go Environment
+      if: inputs.print_go_env == 'true'
+      run: go env
       shell: bash
 
     - name: Add Dependencies from Cache
-      if: inputs.skip_cache == 'false'
+      if: inputs.skip_cache != 'true'
       uses: actions/cache@v2
       with:
         path: |
@@ -105,14 +139,14 @@ runs:
           ${{ runner.os }}-go-
 
     - name: Install dependencies
-      if: inputs.skip_install == 'false'
+      if: inputs.skip_install != 'true'
       run: |
         go mod download
         go mod verify
       shell: bash
 
     - name: Run unit tests
-      if: inputs.skip_testing == 'false'
+      if: inputs.skip_testing != 'true'
       run: go test ${{ inputs.test_flags }} ./...
       shell: bash
 
@@ -125,29 +159,36 @@ runs:
 
     ###### Check and setup Kubernetes configs
 
-    - name: Check k8s folder existence
-      id: k8s_exists
-      uses: andstor/file-existence-action@v1.0.1
-      with:
-        files: "k8s"
-
     - name: Create k8s directory
-      if: steps.k8s_exists.outputs.files_exists != 'true'
-      run: mkdir k8s
+      run: mkdir -p k8s
       shell: bash
 
     - name: Copy missing k8s config files
       run: cp -inv ${{ github.action_path }}/k8s/* k8s
       shell: bash
 
+    - name: Copy default Dockerfile
+      run: cp -inv ${{ github.action_path }}/Dockerfile Dockerfile
+      shell: bash
+
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
-      uses: dmsi-io/gha-k8s-deploy@v1
-      with: 
+      uses: dmsi-io/gha-k8s-deploy@v1.1
+      id: deploy
+      with:
         GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
         GKE_CLUSTER_NAME: ${{ inputs.GKE_CLUSTER_NAME }}
         GCP_ZONE: ${{ inputs.GCP_ZONE }}
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
         secret: ${{ inputs.secret }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
+        print_gcloud_info: ${{ inputs.print_gcloud_info }}
+        print_environment: ${{ inputs.print_environment }}
+
+    ###### Reset GraphQL Schema ######
+
+    - name: Reset GraphQL Schema
+      if: inputs.skip_reset_schema != 'true'
+      run: curl "${{ steps.deploy.outputs.url }}${{ inputs.endpoint }}"
+      shell: bash
