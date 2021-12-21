@@ -190,5 +190,5 @@ runs:
 
     - name: Reset GraphQL Schema
       if: inputs.skip_reset_schema != 'true'
-      run: curl "https://$HOSTNAME${{ inputs.endpoint }}"
+      run: curl "${{ steps.deploy.outputs.url }}${{ inputs.endpoint }}"
       shell: bash
