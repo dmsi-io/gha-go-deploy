@@ -174,7 +174,7 @@ runs:
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
-      uses: dmsi-io/gha-k8s-deploy@feature/gha-cleanup
+      uses: dmsi-io/gha-k8s-deploy@v1.1
       id: deploy
       with:
         GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
