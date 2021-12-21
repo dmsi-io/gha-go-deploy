@@ -40,6 +40,11 @@ inputs:
     required: false
     default: 'false'
 
+  print_go_env:
+    description: 'Flag to optionally print go environment'
+    required: false
+    default: 'false'
+
   secret:
     description: 'Name of secret to copy from default namespace'
     required: false
@@ -115,7 +120,11 @@ runs:
       run: |
         git config --global url."https://${{ inputs.GHA_ACCESS_USER }}:${{ inputs.GHA_ACCESS_TOKEN }}@github.com".insteadOf "https://github.com"
         go env -w GOPRIVATE="github.com/${{ github.repository_owner }}/*"
-        go env
+      shell: bash
+
+    - name: Print Go Environment
+      if: inputs.print_go_env == 'true'
+      run: go env
       shell: bash
 
     - name: Add Dependencies from Cache

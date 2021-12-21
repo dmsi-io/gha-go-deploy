@@ -172,3 +172,14 @@ Sometimes it is helpful to view gcloud information to help debug. Supplying this
 with:
   print_gcloud_info: true
 ```
+
+#### Print Go Environment
+
+Sometimes it is helpful to view the Go environment to help debug. Supplying this flag will print `go env` to the console.
+
+- Default: `false`
+
+```yaml
+with:
+  print_go_env: true
+```
