@@ -12,7 +12,7 @@ This GitHub Action encapsulates all of the build and deploy steps required to de
 
 ```yaml
 - name: Build and Deploy Kubernetes
-  uses: dmsi-io/gha-go-deploy@v1.1
+  uses: dmsi-io/gha-go-deploy@v1.2
   with:
     GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
     GKE_CLUSTER_NAME: ${{ secrets.GCP_STAGING_CLUSTER_NAME }}
@@ -30,6 +30,22 @@ As of v1.1 of this GitHub Action, there will be provided default Kubernetes conf
 > Only supply the k8s yaml file that requires customization, all others will be copied in from this GitHub Action.
 
 Additionally, the Dockerfile must also be located at the head of the repository.
+
+### Outputs
+
+#### URL
+
+Since this action deploys to a branch specific namespace, this action will output a URL to the namespace.
+
+```yaml
+- name: Build and Deploy Kubernetes
+  uses: dmsi-io/gha-go-deploy@v1.2
+  id: deploy
+  with: ...
+
+- name: Print URL
+  run: echo ${{ steps.deploy.outputs.url }}
+```
 
 ### Optional inputs
 
