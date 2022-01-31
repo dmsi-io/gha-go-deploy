@@ -58,6 +58,17 @@ with:
   secret: 'secret-env'
 ```
 
+#### ConfigMap
+
+Used to specify a different file to deploy a ConfigMap object from. If the file does not exist, it will not try to deploy.
+
+- Default: `configmap.yaml`
+
+```yaml
+with:
+  configmap: 'config.yaml'
+```
+
 #### Skip Deployment Status
 
 Sometimes when trying to debug a k8s deployment that refuses to deploy correctly, it can build up a lot of GHA minutes to wait for the timeout of deployment status check. Supplying this flag allows the GHA to skip checking if the deployment was successful.

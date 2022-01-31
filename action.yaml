@@ -49,6 +49,11 @@ inputs:
     description: 'Name of secret to copy from default namespace'
     required: false
 
+  configmap:
+    description: 'Filename of configmap config'
+    required: false
+    default: 'configmap.yaml'
+
   skip_deploy_status:
     description: 'Flag to skip deployment status check'
     required: false
@@ -182,6 +187,7 @@ runs:
         GCP_ZONE: ${{ inputs.GCP_ZONE }}
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
         secret: ${{ inputs.secret }}
+        configmap: ${{ inputs.configmap }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
         print_gcloud_info: ${{ inputs.print_gcloud_info }}
         print_environment: ${{ inputs.print_environment }}
