@@ -54,6 +54,11 @@ inputs:
     required: false
     default: 'configmap.yaml'
 
+  skip_k8s_deploy:
+    description: 'Flag to skip Kubernetes artifact deployment steps'
+    required: false
+    default: 'false'
+
   skip_deploy_status:
     description: 'Flag to skip deployment status check'
     required: false
@@ -179,7 +184,7 @@ runs:
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
-      uses: dmsi-io/gha-k8s-deploy@v1.1
+      uses: dmsi-io/gha-k8s-deploy@v1.2
       id: deploy
       with:
         GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
@@ -189,6 +194,7 @@ runs:
         secret: ${{ inputs.secret }}
         configmap: ${{ inputs.configmap }}
         skip_deploy_status: ${{ inputs.skip_deploy_status }}
+        skip_k8s_deploy: ${{ inputs.skip_k8s_deploy }}
         print_gcloud_info: ${{ inputs.print_gcloud_info }}
         print_environment: ${{ inputs.print_environment }}
 
