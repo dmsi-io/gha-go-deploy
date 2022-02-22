@@ -115,7 +115,7 @@ runs:
         token: ${{ inputs.GHA_ACCESS_TOKEN }}
 
     - name: Export Environment Variables
-      uses: dmsi-io/gha-env-variables@v1
+      uses: dmsi-io/gha-env-variables@v1.2
       with:
         TLD: ${{ inputs.TLD }}
         GCP_PROJECT_ID: ${{ inputs.GCP_PROJECT_ID }}
