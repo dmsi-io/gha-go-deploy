@@ -111,8 +111,6 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@v2
-      with:
-        token: ${{ inputs.GHA_ACCESS_TOKEN }}
 
     - name: Export Environment Variables
       uses: dmsi-io/gha-env-variables@v1.2
