@@ -201,6 +201,6 @@ runs:
     ###### Reset GraphQL Schema ######
 
     - name: Reset GraphQL Schema
-      if: inputs.skip_reset_schema != 'true'
+      if: inputs.skip_reset_schema != 'true' && inputs.skip_k8s_deploy != 'true'
       run: curl "${{ steps.deploy.outputs.url }}${{ inputs.endpoint }}"
       shell: bash
