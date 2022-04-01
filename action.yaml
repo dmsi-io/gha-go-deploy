@@ -193,7 +193,7 @@ runs:
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
-      uses: dmsi-io/gha-k8s-deploy@feature/HOU-223
+      uses: dmsi-io/gha-k8s-deploy@v1.3
       id: deploy
       with:
         GCP_IDENTITY_PROVIDER: ${{ inputs.GCP_IDENTITY_PROVIDER }}
