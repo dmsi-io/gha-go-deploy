@@ -2,9 +2,18 @@ name: 'Deploy Go Application to Kubernetes'
 description: 'Used to encapsulate the build and deploy process for Go middleware services.'
 
 inputs:
+  GCP_IDENTITY_PROVIDER:
+    description: 'GCP Workload Identity Provider'
+    required: false
+
+  GCP_SERVICE_ACCOUNT:
+    description: 'GCP Service Account email'
+    required: false
+
   GCP_SA_KEY:
     description: 'GCP Service Account Key (JSON)'
-    required: true
+    required: false
+    deprecationMessage: 'It is recommended to instead use Workload Identity Federation with the GCP_IDENTITY_PROVIDER and GCP_SERVICE_ACCOUNT inputs.'
 
   GKE_CLUSTER_NAME:
     description: 'Google Kubernetes Engine Cluster name'
@@ -110,7 +119,7 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Export Environment Variables
       uses: dmsi-io/gha-env-variables@v1.2
@@ -184,9 +193,11 @@ runs:
     ###### Deploy Kubernetes ######
 
     - name: Deploy Kubernetes
-      uses: dmsi-io/gha-k8s-deploy@v1.2
+      uses: dmsi-io/gha-k8s-deploy@v1.3
       id: deploy
       with:
+        GCP_IDENTITY_PROVIDER: ${{ inputs.GCP_IDENTITY_PROVIDER }}
+        GCP_SERVICE_ACCOUNT: ${{ inputs.GCP_SERVICE_ACCOUNT }}
         GCP_SA_KEY: ${{ inputs.GCP_SA_KEY }}
         GKE_CLUSTER_NAME: ${{ inputs.GKE_CLUSTER_NAME }}
         GCP_ZONE: ${{ inputs.GCP_ZONE }}
